@@ -3,44 +3,67 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Muhammad Sualeh | Robotics Engineer</title>
+<title>Muhammad Sualeh | Robotics Navigation Engineer</title>
 <link rel="stylesheet" href="style.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 <canvas id="bg"></canvas>
 
-<header class="hero">
-<h1>Muhammad Sualeh, PhD</h1>
-<p>Navigation & Robotics Engineer</p>
-<a href="#projects" class="btn">Explore Projects</a>
-</header>
+<nav>
+<div class="logo">SUALEH.OS</div>
+<div class="links">
+<a href="#about">About</a>
+<a href="#projects">Projects</a>
+<a href="#experience">Experience</a>
+<a href="#contact">Contact</a>
+</div>
+</nav>
 
-<section>
-<h2>About</h2>
-<p>Robotics engineer specializing in ROS2, Navigation2, SLAM, Perception and Multi‑Robot Systems.</p>
+<section class="hero">
+<div class="hero-left">
+<h1>Muhammad Sualeh, PhD</h1>
+<h2>Navigation & Robotics Engineer</h2>
+<p>Architecting autonomous navigation systems for real-world robots.</p>
+<div class="badges">
+<span>ROS2</span><span>Nav2</span><span>SLAM</span><span>Multi‑Robot Systems</span>
+</div>
+</div>
+<div class="hero-right">
+<img src="assets/profile.jpg" alt="Profile">
+</div>
 </section>
 
-<section>
-<h2>Skills</h2>
-<div class="grid">
-<div class="card">ROS2</div>
-<div class="card">Navigation2</div>
-<div class="card">SLAM</div>
-<div class="card">Perception</div>
-<div class="card">C++</div>
-<div class="card">Python</div>
+<section id="about">
+<h2>Mission Profile</h2>
+<p>Robotics engineer with expertise in autonomous navigation, perception, SLAM, and commercial service robot deployment.</p>
+<div class="stats">
+<div><b>5+</b><span>Years Robotics R&D</span></div>
+<div><b>PhD</b><span>Control & Robot Engineering</span></div>
+<div><b>24/7</b><span>Autonomous Operations</span></div>
+<div><b>Global</b><span>Robot Deployments</span></div>
 </div>
 </section>
 
 <section id="projects">
 <h2>Featured Projects</h2>
-<div class="grid">
-<div class="card">Multi‑Robot Navigation Framework</div>
-<div class="card">Commercial Service Robots</div>
-<div class="card">Semantic Dynamic SLAM</div>
-<div class="card">Visual‑LiDAR Perception</div>
+<div class="cards">
+<div class="card"><h3>Multi‑Robot Navigation Framework</h3><p>Production-ready coordination and routing system.</p></div>
+<div class="card"><h3>SIRBOT Navigation Stack</h3><p>Commercial deployment across international markets.</p></div>
+<div class="card"><h3>Semantic Dynamic SLAM</h3><p>Research on perception-aware mapping.</p></div>
+<div class="card"><h3>Visual‑LiDAR Perception</h3><p>Object detection, tracking and fusion.</p></div>
 </div>
+</section>
+
+<section id="experience">
+<h2>Career Timeline</h2>
+<ul class="timeline">
+<li><b>2022-Present</b> — Navigation Engineer, RGT</li>
+<li><b>2021-2022</b> — Postdoctoral Researcher</li>
+<li><b>2017-2021</b> — PhD Research Scholar</li>
+<li><b>2012-2017</b> — Lecturer</li>
+<li><b>2009-2011</b> — MSc, Chalmers + Volvo</li>
+</ul>
 </section>
 
 <section>
@@ -48,10 +71,22 @@
 <pre>
 $ whoami
 Muhammad Sualeh
-Navigation Engineer
-ROS2 | Nav2 | SLAM
-STATUS: ACTIVE
+
+$ specialization
+ROS2
+Navigation2
+SLAM
+Multi-Robot Systems
+
+$ status
+ACTIVE
 </pre>
+</section>
+
+<section id="contact">
+<h2>Connect</h2>
+<p>GitHub: https://github.com/er-sualeh</p>
+<p>LinkedIn: linkedin.com/in/er-sualeh</p>
 </section>
 
 <script src="script.js"></script>

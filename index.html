@@ -3,92 +3,989 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Muhammad Sualeh | Robotics Navigation Engineer</title>
-<link rel="stylesheet" href="style.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<title>Muhammad Sualeh — Navigation &amp; Robotics Engineer</title>
+<meta name="description" content="Muhammad Sualeh — PhD, Navigation Engineer. ROS2, Nav2, SLAM, multi-robot systems.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#080b10;
+    --deep:#0d131c;
+    --panel:#111926;
+    --line:#1f2b3d;
+    --signal:#2de8c9;
+    --signal-dim:#2de8c930;
+    --amber:#ff9a4d;
+    --mist:#8b9bb4;
+    --mist-dim:#5d6b82;
+    --white:#eef3f9;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--void);
+    color:var(--white);
+    font-family:var(--body);
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important;}
+  }
+
+  a{color:inherit; text-decoration:none;}
+  ::selection{background:var(--signal); color:var(--void);}
+
+  /* background grid texture */
+  .grid-bg{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:56px 56px;
+    opacity:0.28;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 90%);
+  }
+
+  .wrap{max-width:1180px; margin:0 auto; padding:0 32px; position:relative; z-index:1;}
+
+  /* ---------- NAV ---------- */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    backdrop-filter: blur(14px);
+    background:rgba(8,11,16,0.72);
+    border-bottom:1px solid var(--line);
+  }
+  nav{
+    max-width:1180px; margin:0 auto; padding:18px 32px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .logo{
+    font-family:var(--mono); font-weight:600; font-size:15px;
+    letter-spacing:0.5px; display:flex; align-items:center; gap:10px;
+  }
+  .logo .dot{
+    width:8px; height:8px; border-radius:50%; background:var(--signal);
+    box-shadow:0 0 8px var(--signal), 0 0 16px var(--signal);
+    animation:pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{opacity:1; transform:scale(1);}
+    50%{opacity:0.5; transform:scale(0.8);}
+  }
+  .navlinks{display:flex; gap:32px; align-items:center;}
+  .navlinks a{
+    font-family:var(--mono); font-size:12.5px; color:var(--mist);
+    letter-spacing:0.5px; text-transform:uppercase;
+    transition:color 0.2s;
+    position:relative;
+  }
+  .navlinks a::after{
+    content:''; position:absolute; left:0; bottom:-4px; width:0; height:1px;
+    background:var(--signal); transition:width 0.25s;
+  }
+  .navlinks a:hover{color:var(--white);}
+  .navlinks a:hover::after{width:100%;}
+  .status-pill{
+    font-family:var(--mono); font-size:11px; color:var(--signal);
+    border:1px solid var(--signal-dim); padding:5px 10px; border-radius:20px;
+    display:flex; align-items:center; gap:6px; letter-spacing:0.5px;
+  }
+  .status-pill .dot{width:6px; height:6px; border-radius:50%; background:var(--signal); box-shadow:0 0 6px var(--signal);}
+  .navmenu-toggle{display:none; background:none; border:none; color:var(--white); font-size:22px; cursor:pointer;}
+
+  @media (max-width:860px){
+    .navlinks{
+      position:fixed; top:60px; right:0; left:0; background:var(--deep);
+      flex-direction:column; align-items:flex-start; padding:24px 32px; gap:20px;
+      border-bottom:1px solid var(--line); transform:translateY(-140%); transition:transform 0.3s ease; z-index:99;
+    }
+    .navlinks.open{transform:translateY(0);}
+    .navmenu-toggle{display:block;}
+    .status-pill{display:none;}
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100vh; display:flex; align-items:center;
+    padding-top:100px; padding-bottom:60px; position:relative;
+  }
+  .hero-grid{
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:48px; align-items:center; width:100%;
+  }
+  @media (max-width:960px){ .hero-grid{grid-template-columns:1fr;} }
+
+  .eyebrow{
+    font-family:var(--mono); font-size:12.5px; color:var(--signal);
+    letter-spacing:2px; text-transform:uppercase; margin-bottom:20px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:'//'; color:var(--mist-dim);}
+
+  h1{
+    font-family:var(--display); font-weight:700;
+    font-size:clamp(2.4rem, 5.2vw, 4.2rem); line-height:1.05;
+    letter-spacing:-1px; margin-bottom:20px;
+  }
+  h1 .accent{color:var(--signal);}
+
+  .hero-sub{
+    font-size:17px; color:var(--mist); max-width:520px; margin-bottom:32px;
+  }
+  .hero-sub b{color:var(--white); font-weight:600;}
+
+  .cta-row{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:44px;}
+  .btn{
+    font-family:var(--mono); font-size:13px; letter-spacing:0.3px;
+    padding:13px 22px; border-radius:6px; display:inline-flex; align-items:center; gap:8px;
+    transition:all 0.2s ease; cursor:pointer; border:1px solid transparent;
+  }
+  .btn-primary{
+    background:var(--signal); color:#03110d; font-weight:600;
+  }
+  .btn-primary:hover{box-shadow:0 0 24px var(--signal-dim); transform:translateY(-2px);}
+  .btn-ghost{
+    border:1px solid var(--line); color:var(--white);
+  }
+  .btn-ghost:hover{border-color:var(--signal); color:var(--signal); transform:translateY(-2px);}
+
+  .telemetry{
+    display:flex; gap:28px; flex-wrap:wrap; font-family:var(--mono); font-size:12px; color:var(--mist-dim);
+  }
+  .telemetry span b{display:block; color:var(--white); font-size:19px; font-family:var(--display); margin-bottom:2px;}
+
+  /* hero visual: switching perception/navigation modes */
+  .radar-stage{max-width:460px; margin:0 auto;}
+  .radar-box{
+    position:relative; aspect-ratio:1/1;
+    border:1px solid var(--line); border-radius:12px; background:radial-gradient(circle at 50% 50%, #0c1420 0%, #080b10 75%);
+    overflow:hidden;
+  }
+  .radar-box svg{width:100%; height:100%; display:block;}
+  .hud-label{
+    position:absolute; font-family:var(--mono); font-size:9.5px; color:var(--mist-dim); letter-spacing:0.5px; z-index:2; pointer-events:none;
+  }
+  .hud-tl{top:12px; left:14px;}
+  .hud-br{bottom:12px; right:14px; text-align:right;}
+  .hud-tl .live, .hud-br .live{color:var(--signal);}
+  .hud-tl #modeName{display:block; color:var(--white); font-size:12.5px; font-weight:600; margin-top:2px; letter-spacing:0.3px;}
+
+  .mode-caption{
+    position:absolute; left:14px; bottom:12px; right:100px; z-index:2; pointer-events:none;
+    font-family:var(--mono); font-size:10px; color:var(--mist-dim); line-height:1.4;
+  }
+
+  .scene{display:none; opacity:0;}
+  .scene.active{display:block; opacity:1;}
+
+  @keyframes slam-spin{ to{ transform:rotate(360deg); } }
+  .scene.active#scene-slam #sweepGroup{ animation:slam-spin 6s linear infinite; transform-origin:200px 200px; }
+
+  .mode-tabs{
+    display:flex; gap:6px; margin-top:16px; flex-wrap:wrap; justify-content:center;
+  }
+  .mode-tab{
+    position:relative; overflow:hidden; font-family:var(--mono); font-size:10px; letter-spacing:0.5px;
+    color:var(--mist-dim); background:transparent; border:1px solid var(--line); border-radius:6px;
+    padding:7px 11px 9px; cursor:pointer; transition:color 0.2s, border-color 0.2s;
+  }
+  .mode-tab:hover{color:var(--white); border-color:var(--signal-dim);}
+  .mode-tab.active{color:var(--signal); border-color:var(--signal-dim);}
+  .mode-tab .bar{position:absolute; left:0; bottom:0; height:2px; width:0%; background:var(--signal);}
+  .mode-tab.active .bar{animation:tabfill 4.5s linear forwards;}
+  @keyframes tabfill{ from{width:0%;} to{width:100%;} }
+
+  /* ---------- MARQUEE ---------- */
+  .marquee-wrap{
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    background:var(--deep); overflow:hidden; padding:16px 0; position:relative; z-index:1;
+  }
+  .marquee{
+    display:flex; gap:48px; white-space:nowrap; width:max-content;
+    animation:scroll-left 32s linear infinite;
+    font-family:var(--mono); font-size:13px; color:var(--mist-dim); letter-spacing:1px;
+  }
+  .marquee span{display:flex; align-items:center; gap:48px;}
+  .marquee b{color:var(--signal); margin:0 8px;}
+  @keyframes scroll-left{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+
+  /* ---------- SECTION SHELL ---------- */
+  section{padding:120px 0; position:relative; z-index:1;}
+  .section-head{margin-bottom:56px; max-width:640px;}
+  .section-tag{
+    font-family:var(--mono); font-size:12px; color:var(--signal); letter-spacing:2px; text-transform:uppercase; margin-bottom:14px; display:block;
+  }
+  .section-title{font-family:var(--display); font-size:clamp(1.8rem,3.4vw,2.6rem); font-weight:600; letter-spacing:-0.5px; margin-bottom:14px;}
+  .section-desc{color:var(--mist); font-size:15.5px;}
+
+  .reveal{opacity:0; transform:translateY(24px); transition:opacity 0.7s ease, transform 0.7s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  /* ---------- ABOUT ---------- */
+  .about-grid{display:grid; grid-template-columns:1.3fr 1fr; gap:56px; align-items:start;}
+  @media (max-width:860px){.about-grid{grid-template-columns:1fr;}}
+  .about-grid p{color:var(--mist); font-size:16px; margin-bottom:18px;}
+  .about-grid p b{color:var(--white); font-weight:600;}
+
+  .stat-panel{
+    border:1px solid var(--line); border-radius:12px; background:var(--panel); padding:28px;
+  }
+  .id-card{display:flex; align-items:center; gap:14px; margin-bottom:22px; padding-bottom:20px; border-bottom:1px solid var(--line);}
+  .id-photo{width:64px; height:64px; border-radius:10px; overflow:hidden; border:1px solid var(--signal-dim); position:relative; flex-shrink:0;}
+  .id-photo img{width:100%; height:100%; object-fit:cover; display:block; filter:grayscale(35%) contrast(1.05) brightness(0.96);}
+  .id-photo::after{content:''; position:absolute; inset:0; background:linear-gradient(150deg, var(--signal-dim), transparent 55%); mix-blend-mode:overlay; pointer-events:none;}
+  .id-photo::before{
+    content:''; position:absolute; inset:0; border-radius:10px;
+    box-shadow:inset 0 0 0 1px rgba(45,232,201,0.15);
+    pointer-events:none;
+  }
+  .id-info{display:flex; flex-direction:column; gap:3px;}
+  .id-name{font-family:var(--display); font-weight:600; font-size:15.5px; letter-spacing:0.2px;}
+  .id-role{font-family:var(--mono); font-size:10.5px; color:var(--signal); letter-spacing:0.6px; text-transform:uppercase;}
+  .id-loc{font-family:var(--mono); font-size:10.5px; color:var(--mist-dim); letter-spacing:0.3px;}
+  .stat-panel-title{font-family:var(--mono); font-size:11.5px; color:var(--mist-dim); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:20px; display:flex; justify-content:space-between;}
+  .stat-row{display:flex; justify-content:space-between; align-items:baseline; padding:14px 0; border-bottom:1px solid var(--line);}
+  .stat-row:last-child{border-bottom:none;}
+  .stat-row .label{font-size:13.5px; color:var(--mist);}
+  .stat-row .val{font-family:var(--display); font-size:22px; font-weight:600; color:var(--signal);}
+
+  /* ---------- PATH / EXPERIENCE ---------- */
+  .path{position:relative; padding-left:36px;}
+  .path::before{
+    content:''; position:absolute; left:7px; top:8px; bottom:8px; width:2px;
+    background:linear-gradient(var(--line), var(--line));
+  }
+  .path::after{
+    content:''; position:absolute; left:7px; top:8px; width:2px; height:0%;
+    background:var(--signal); box-shadow:0 0 10px var(--signal);
+    transition:height 1.8s cubic-bezier(.2,.8,.2,1);
+  }
+  .path.in::after{height:100%;}
+
+  .waypoint{position:relative; padding-bottom:52px;}
+  .waypoint:last-child{padding-bottom:0;}
+  .waypoint::before{
+    content:''; position:absolute; left:-36px; top:4px; width:16px; height:16px; border-radius:50%;
+    background:var(--void); border:2px solid var(--mist-dim); z-index:2; transition:border-color 0.4s, box-shadow 0.4s;
+  }
+  .waypoint.in::before{border-color:var(--signal); box-shadow:0 0 12px var(--signal);}
+  .waypoint.current::before{background:var(--signal);}
+
+  .wp-meta{
+    font-family:var(--mono); font-size:11.5px; color:var(--signal); letter-spacing:0.5px; margin-bottom:6px;
+    display:flex; gap:12px; flex-wrap:wrap;
+  }
+  .wp-meta .loc{color:var(--mist-dim);}
+  .wp-role{font-family:var(--display); font-size:19px; font-weight:600; margin-bottom:2px;}
+  .wp-org{color:var(--mist); font-size:14.5px; margin-bottom:12px;}
+  .wp-list{list-style:none; display:flex; flex-direction:column; gap:8px;}
+  .wp-list li{font-size:14.5px; color:var(--mist); padding-left:18px; position:relative;}
+  .wp-list li::before{content:'▸'; position:absolute; left:0; color:var(--signal); font-size:12px; top:2px;}
+
+  /* ---------- SYSTEMS / SKILLS ---------- */
+  .sys-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:20px;}
+  @media (max-width:720px){.sys-grid{grid-template-columns:1fr;}}
+  .sys-card{
+    border:1px solid var(--line); border-radius:12px; padding:26px; background:var(--panel);
+    transition:border-color 0.25s, transform 0.25s;
+  }
+  .sys-card:hover{border-color:var(--signal-dim); transform:translateY(-4px);}
+  .sys-card-head{display:flex; align-items:center; gap:10px; margin-bottom:16px;}
+  .sys-icon{width:34px; height:34px; border-radius:8px; background:var(--signal-dim); display:flex; align-items:center; justify-content:center; color:var(--signal); font-family:var(--mono); font-size:14px; font-weight:600;}
+  .sys-card-head h3{font-family:var(--display); font-size:16.5px; font-weight:600;}
+  .chips{display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{
+    font-family:var(--mono); font-size:12px; color:var(--mist); border:1px solid var(--line);
+    padding:6px 12px; border-radius:20px; transition:all 0.2s;
+  }
+  .chip:hover{color:var(--signal); border-color:var(--signal-dim);}
+
+  /* ---------- PROJECTS ---------- */
+  .proj-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  @media (max-width:960px){.proj-grid{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:640px){.proj-grid{grid-template-columns:1fr;}}
+  .proj-card{
+    border:1px solid var(--line); border-radius:12px; padding:24px; background:var(--panel);
+    position:relative; overflow:hidden; transition:transform 0.25s, border-color 0.25s;
+  }
+  .proj-card::before{
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    background:linear-gradient(90deg, transparent, var(--signal), transparent);
+    transform:scaleX(0); transition:transform 0.4s;
+  }
+  .proj-card:hover{transform:translateY(-4px); border-color:var(--signal-dim);}
+  .proj-card:hover::before{transform:scaleX(1);}
+  .proj-num{font-family:var(--mono); font-size:11px; color:var(--mist-dim); margin-bottom:14px; display:block;}
+  .proj-card h3{font-family:var(--display); font-size:17px; font-weight:600; margin-bottom:10px;}
+  .proj-card p{font-size:13.8px; color:var(--mist); margin-bottom:16px;}
+  .proj-tags{display:flex; flex-wrap:wrap; gap:6px;}
+  .proj-tags span{font-family:var(--mono); font-size:10.5px; color:var(--signal); background:var(--signal-dim); padding:4px 8px; border-radius:4px;}
+
+  /* ---------- PUBLICATIONS ---------- */
+  .pub-note{
+    font-family:var(--mono); font-size:12.5px; color:var(--mist-dim); margin-bottom:28px; padding:14px 18px;
+    border-left:2px solid var(--signal); background:var(--panel); border-radius:0 8px 8px 0;
+  }
+  .pub-list{display:flex; flex-direction:column; border-top:1px solid var(--line);}
+  .pub-item{
+    display:flex; gap:20px; align-items:baseline; padding:20px 4px; border-bottom:1px solid var(--line);
+    transition:background 0.2s;
+  }
+  .pub-item:hover{background:var(--panel);}
+  .pub-idx{font-family:var(--mono); font-size:12px; color:var(--signal); min-width:26px;}
+  .pub-title{font-size:15px; color:var(--white); flex:1;}
+
+  /* ---------- EDUCATION ---------- */
+  .edu-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  @media (max-width:860px){.edu-grid{grid-template-columns:1fr;}}
+  .edu-card{border:1px solid var(--line); border-radius:12px; padding:26px; background:var(--panel);}
+  .edu-year{font-family:var(--mono); font-size:11.5px; color:var(--signal); margin-bottom:12px; display:block;}
+  .edu-card h3{font-family:var(--display); font-size:16.5px; font-weight:600; margin-bottom:4px;}
+  .edu-card .school{color:var(--mist); font-size:13.5px; margin-bottom:14px;}
+  .edu-card .thesis{font-size:13px; color:var(--mist-dim); line-height:1.5;}
+  .edu-card .thesis b{color:var(--mist); font-weight:500;}
+
+  /* ---------- CONTACT / FOOTER ---------- */
+  .contact-box{
+    text-align:center; border:1px solid var(--line); border-radius:16px; padding:72px 32px;
+    background:radial-gradient(ellipse at 50% 0%, var(--signal-dim), transparent 60%), var(--panel);
+  }
+  .contact-box h2{font-family:var(--display); font-size:clamp(1.9rem,4vw,3rem); font-weight:700; margin-bottom:16px; letter-spacing:-1px;}
+  .contact-box p{color:var(--mist); max-width:480px; margin:0 auto 34px; font-size:15.5px;}
+  .contact-links{display:flex; gap:14px; justify-content:center; flex-wrap:wrap;}
+
+  footer{padding:36px 0 60px; text-align:center; font-family:var(--mono); font-size:12px; color:var(--mist-dim);}
+  footer .coords{margin-top:6px; color:var(--mist-dim);}
+</style>
 </head>
 <body>
-<canvas id="bg"></canvas>
 
-<nav>
-<div class="logo">SUALEH.OS</div>
-<div class="links">
-<a href="#about">About</a>
-<a href="#projects">Projects</a>
-<a href="#experience">Experience</a>
-<a href="#contact">Contact</a>
-</div>
-</nav>
+<div class="grid-bg"></div>
 
+<header>
+  <nav>
+    <div class="logo"><span class="dot"></span>M.SUALEH</div>
+    <div class="navlinks" id="navlinks">
+      <a href="#about">About</a>
+      <a href="#path">Path</a>
+      <a href="#systems">Systems</a>
+      <a href="#work">Work</a>
+      <a href="#papers">Papers</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div style="display:flex; align-items:center; gap:16px;">
+      <div class="status-pill"><span class="dot"></span>OPEN TO R&amp;D ROLES</div>
+      <button class="navmenu-toggle" id="navToggle">☰</button>
+    </div>
+  </nav>
+</header>
+
+<!-- ================= HERO ================= -->
 <section class="hero">
-<div class="hero-left">
-<h1>Muhammad Sualeh, PhD</h1>
-<h2>Navigation & Robotics Engineer</h2>
-<p>Architecting autonomous navigation systems for real-world robots.</p>
-<div class="badges">
-<span>ROS2</span><span>Nav2</span><span>SLAM</span><span>Multi‑Robot Systems</span>
-</div>
-</div>
-<div class="hero-right">
-<img src="assets/profile.jpg" alt="Profile">
-</div>
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">Navigation &amp; Robotics Engineer</div>
+      <h1>Teaching robots<br>to find their <span class="accent">way</span>.</h1>
+      <p class="hero-sub">
+        PhD in Semantics-Aware Dynamic SLAM. <b>5+ years</b> turning perception and planning research into
+        production ROS2/Nav2 systems — deployed on service robot fleets across <b>multiple countries</b>.
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="mailto:er.sualeh@gmail.com">Get in touch →</a>
+        <a class="btn btn-ghost" href="https://github.com/er-sualeh" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn btn-ghost" href="https://www.linkedin.com/in/er-sualeh" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+      <div class="telemetry">
+        <span><b>5+ yrs</b>Production robotics</span>
+        <span><b>11</b>Publications &amp; patents</span>
+        <span><b>2+</b>Countries deployed</span>
+        <span><b>PhD</b>Control &amp; Robot Eng.</span>
+      </div>
+    </div>
+    <div class="radar-stage">
+      <div class="radar-box">
+        <div class="hud-label hud-tl">MODE<span id="modeName">SLAM MAPPING</span></div>
+        <div class="hud-label hud-br" id="coordReadout">37.5665°N 126.9780°E<br>SEOUL, KR</div>
+        <svg viewBox="0 0 400 400" aria-hidden="true">
+          <defs>
+            <radialGradient id="sweepGrad" cx="0" cy="0" r="1">
+              <stop offset="0%" stop-color="#2de8c9" stop-opacity="0.55"/>
+              <stop offset="100%" stop-color="#2de8c9" stop-opacity="0"/>
+            </radialGradient>
+            <clipPath id="circleClip"><circle cx="200" cy="200" r="176"/></clipPath>
+            <clipPath id="boxClip"><rect x="24" y="24" width="352" height="352" rx="8"/></clipPath>
+            <pattern id="dotgrid" width="28" height="28" patternUnits="userSpaceOnUse">
+              <circle cx="1.2" cy="1.2" r="1.2" fill="#1f2b3d"/>
+            </pattern>
+          </defs>
+
+          <!-- ============ SCENE 1: SLAM MAPPING ============ -->
+          <g class="scene active" id="scene-slam">
+            <circle cx="200" cy="200" r="176" fill="none" stroke="#1f2b3d" stroke-width="1"/>
+            <circle cx="200" cy="200" r="132" fill="none" stroke="#1f2b3d" stroke-width="1"/>
+            <circle cx="200" cy="200" r="88" fill="none" stroke="#1f2b3d" stroke-width="1"/>
+            <circle cx="200" cy="200" r="44" fill="none" stroke="#1f2b3d" stroke-width="1"/>
+            <line x1="24" y1="200" x2="376" y2="200" stroke="#1f2b3d" stroke-width="1"/>
+            <line x1="200" y1="24" x2="200" y2="376" stroke="#1f2b3d" stroke-width="1"/>
+
+            <g clip-path="url(#circleClip)">
+              <g id="sweepGroup">
+                <!-- fading trail behind the beam -->
+                <path d="M200,200 L303.5,57.6 A176,176 0 0,1 330.8,82.2 Z" fill="#2de8c9" opacity="0.08"/>
+                <path d="M200,200 L271.6,39.2 A176,176 0 0,1 303.5,57.6 Z" fill="#2de8c9" opacity="0.16"/>
+                <path d="M200,200 L236.6,27.8 A176,176 0 0,1 271.6,39.2 Z" fill="#2de8c9" opacity="0.28"/>
+                <!-- bright leading edge -->
+                <path d="M200,200 L200,24 A176,176 0 0,1 236.6,27.8 Z" fill="url(#sweepGrad)"/>
+                <line x1="200" y1="200" x2="200" y2="24" stroke="#2de8c9" stroke-width="1.5" opacity="0.9"/>
+              </g>
+            </g>
+
+            <!-- occupancy cells revealed as the beam passes over them -->
+            <circle cx="150" cy="130" r="4" fill="#ff9a4d" opacity="0">
+              <animate attributeName="opacity" values="0;0;1;0.55;0.55;0" keyTimes="0;0.895;0.91;0.97;0.99;1" dur="6s" begin="0s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="270" cy="160" r="3.5" fill="#2de8c9" opacity="0">
+              <animate attributeName="opacity" values="0;0;1;0.5;0.5;0" keyTimes="0;0.157;0.172;0.24;0.26;0.27" dur="6s" begin="0s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="240" cy="290" r="4" fill="#ff9a4d" opacity="0">
+              <animate attributeName="opacity" values="0;0;1;0.55;0.55;0" keyTimes="0;0.428;0.443;0.51;0.53;0.54" dur="6s" begin="0s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="130" cy="250" r="3" fill="#2de8c9" opacity="0">
+              <animate attributeName="opacity" values="0;0;1;0.45;0.45;0" keyTimes="0;0.639;0.654;0.72;0.74;0.75" dur="6s" begin="0s" repeatCount="indefinite"/>
+            </circle>
+
+            <!-- ping ring at the moment of detection -->
+            <circle cx="150" cy="130" r="3" fill="none" stroke="#ff9a4d" stroke-width="1" opacity="0">
+              <animate attributeName="r" values="3;16" keyTimes="0;1" dur="0.6s" begin="5.37s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.8;0" keyTimes="0;1" dur="0.6s" begin="5.37s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="240" cy="290" r="3" fill="none" stroke="#ff9a4d" stroke-width="1" opacity="0">
+              <animate attributeName="r" values="3;16" keyTimes="0;1" dur="0.6s" begin="2.57s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.8;0" keyTimes="0;1" dur="0.6s" begin="2.57s" repeatCount="indefinite"/>
+            </circle>
+
+            <path d="M 90 300 C 130 250, 150 200, 200 190 S 280 140, 300 95" fill="none" stroke="#2de8c9" stroke-width="1.6" stroke-dasharray="4 5" opacity="0.55"/>
+            <circle r="6" fill="#2de8c9" style="filter:drop-shadow(0 0 6px #2de8c9)">
+              <animateMotion dur="6s" repeatCount="indefinite" path="M 90 300 C 130 250, 150 200, 200 190 S 280 140, 300 95"/>
+            </circle>
+            <circle cx="200" cy="200" r="3" fill="#eef3f9"/>
+          </g>
+
+          <!-- ============ SCENE 2: OBJECT DETECTION ============ -->
+          <g class="scene" id="scene-detect">
+            <rect x="24" y="24" width="352" height="352" fill="url(#dotgrid)" opacity="0.6"/>
+            <rect x="24" y="24" width="352" height="352" rx="8" fill="none" stroke="#1f2b3d"/>
+
+            <g>
+              <rect x="66" y="108" width="92" height="132" fill="none" stroke="#2de8c9" stroke-width="1.6" stroke-dasharray="290" stroke-dashoffset="290">
+                <animate attributeName="stroke-dashoffset" from="290" to="0" dur="0.8s" fill="freeze"/>
+              </rect>
+              <text x="66" y="102" fill="#2de8c9" font-family="JetBrains Mono, monospace" font-size="11">PERSON 0.94</text>
+            </g>
+
+            <g>
+              <rect x="188" y="176" width="112" height="72" fill="none" stroke="#ff9a4d" stroke-width="1.6" stroke-dasharray="368" stroke-dashoffset="368">
+                <animate attributeName="stroke-dashoffset" from="368" to="0" dur="0.8s" begin="0.25s" fill="freeze"/>
+              </rect>
+              <text x="188" y="170" fill="#ff9a4d" font-family="JetBrains Mono, monospace" font-size="11">CART 0.87</text>
+            </g>
+
+            <g>
+              <rect x="246" y="256" width="72" height="64" fill="none" stroke="#2de8c9" stroke-width="1.6" stroke-dasharray="272" stroke-dashoffset="272">
+                <animate attributeName="stroke-dashoffset" from="272" to="0" dur="0.8s" begin="0.5s" fill="freeze"/>
+              </rect>
+              <text x="246" y="250" fill="#2de8c9" font-family="JetBrains Mono, monospace" font-size="11">PALLET 0.81</text>
+            </g>
+
+            <line x1="0" y1="60" x2="400" y2="60" stroke="#2de8c9" stroke-width="1" opacity="0.35">
+              <animate attributeName="y1" values="40;360;40" dur="4s" repeatCount="indefinite"/>
+              <animate attributeName="y2" values="40;360;40" dur="4s" repeatCount="indefinite"/>
+            </line>
+          </g>
+
+          <!-- ============ SCENE 3: MULTI-OBJECT TRACKING ============ -->
+          <g class="scene" id="scene-track">
+            <rect x="24" y="24" width="352" height="352" fill="url(#dotgrid)" opacity="0.6"/>
+            <rect x="24" y="24" width="352" height="352" rx="8" fill="none" stroke="#1f2b3d"/>
+
+            <path d="M 80 320 C 120 260, 140 200, 190 150" fill="none" stroke="#2de8c9" stroke-width="1" stroke-dasharray="2 6" opacity="0.4"/>
+            <path d="M 320 90 C 280 150, 260 220, 220 280" fill="none" stroke="#ff9a4d" stroke-width="1" stroke-dasharray="2 6" opacity="0.4"/>
+            <path d="M 60 120 C 120 140, 180 160, 260 190" fill="none" stroke="#2de8c9" stroke-width="1" stroke-dasharray="2 6" opacity="0.4"/>
+
+            <g id="trailA">
+              <circle r="5" fill="#2de8c9" opacity="0.9"><animateMotion dur="5s" begin="0s" repeatCount="indefinite" path="M 80 320 C 120 260, 140 200, 190 150"/></circle>
+              <circle r="4" fill="#2de8c9" opacity="0.5"><animateMotion dur="5s" begin="-0.25s" repeatCount="indefinite" path="M 80 320 C 120 260, 140 200, 190 150"/></circle>
+              <circle r="3" fill="#2de8c9" opacity="0.3"><animateMotion dur="5s" begin="-0.5s" repeatCount="indefinite" path="M 80 320 C 120 260, 140 200, 190 150"/></circle>
+            </g>
+            <text x="196" y="150" fill="#2de8c9" font-family="JetBrains Mono, monospace" font-size="10">ID 04</text>
+
+            <g id="trailB">
+              <circle r="5" fill="#ff9a4d" opacity="0.9"><animateMotion dur="4.2s" begin="0s" repeatCount="indefinite" path="M 320 90 C 280 150, 260 220, 220 280"/></circle>
+              <circle r="4" fill="#ff9a4d" opacity="0.5"><animateMotion dur="4.2s" begin="-0.2s" repeatCount="indefinite" path="M 320 90 C 280 150, 260 220, 220 280"/></circle>
+              <circle r="3" fill="#ff9a4d" opacity="0.3"><animateMotion dur="4.2s" begin="-0.4s" repeatCount="indefinite" path="M 320 90 C 280 150, 260 220, 220 280"/></circle>
+            </g>
+            <text x="196" y="300" fill="#ff9a4d" font-family="JetBrains Mono, monospace" font-size="10">ID 11</text>
+
+            <g id="trailC">
+              <circle r="5" fill="#2de8c9" opacity="0.9"><animateMotion dur="6s" begin="0s" repeatCount="indefinite" path="M 60 120 C 120 140, 180 160, 260 190"/></circle>
+              <circle r="4" fill="#2de8c9" opacity="0.5"><animateMotion dur="6s" begin="-0.3s" repeatCount="indefinite" path="M 60 120 C 120 140, 180 160, 260 190"/></circle>
+              <circle r="3" fill="#2de8c9" opacity="0.3"><animateMotion dur="6s" begin="-0.6s" repeatCount="indefinite" path="M 60 120 C 120 140, 180 160, 260 190"/></circle>
+            </g>
+            <text x="266" y="196" fill="#2de8c9" font-family="JetBrains Mono, monospace" font-size="10">ID 07</text>
+          </g>
+
+          <!-- ============ SCENE 4: SEMANTIC SEGMENTATION ============ -->
+          <g class="scene" id="scene-seg">
+            <rect x="24" y="24" width="352" height="352" fill="url(#dotgrid)" opacity="0.6"/>
+            <rect x="24" y="24" width="352" height="352" rx="8" fill="none" stroke="#1f2b3d"/>
+
+            <polygon points="40,376 360,376 320,258 80,258" fill="#2de8c9" opacity="0">
+              <animate attributeName="opacity" from="0" to="0.28" dur="0.9s" begin="0s" fill="freeze"/>
+            </polygon>
+            <polygon points="40,24 360,24 336,142 64,142" fill="#6c7bff" opacity="0">
+              <animate attributeName="opacity" from="0" to="0.28" dur="0.9s" begin="0.2s" fill="freeze"/>
+            </polygon>
+            <ellipse cx="150" cy="220" rx="26" ry="46" fill="#ff9a4d" opacity="0">
+              <animate attributeName="opacity" from="0" to="0.55" dur="0.9s" begin="0.4s" fill="freeze"/>
+            </ellipse>
+            <rect x="248" y="196" width="52" height="52" rx="6" fill="#ff6f91" opacity="0">
+              <animate attributeName="opacity" from="0" to="0.5" dur="0.9s" begin="0.6s" fill="freeze"/>
+            </rect>
+
+            <g font-family="JetBrains Mono, monospace" font-size="9.5">
+              <circle cx="46" cy="300" r="4" fill="#2de8c9"/><text x="56" y="304" fill="#8b9bb4">FLOOR</text>
+              <circle cx="46" cy="318" r="4" fill="#6c7bff"/><text x="56" y="322" fill="#8b9bb4">WALL</text>
+              <circle cx="46" cy="336" r="4" fill="#ff9a4d"/><text x="56" y="340" fill="#8b9bb4">DYNAMIC OBJECT</text>
+              <circle cx="46" cy="354" r="4" fill="#ff6f91"/><text x="56" y="358" fill="#8b9bb4">STATIC OBJECT</text>
+            </g>
+          </g>
+
+          <!-- ============ SCENE 5: AUTONOMOUS DRIVING ============ -->
+          <g class="scene" id="scene-drive">
+            <rect x="24" y="24" width="352" height="352" rx="8" fill="none" stroke="#1f2b3d"/>
+            <line x1="60" y1="376" x2="188" y2="150" stroke="#1f2b3d" stroke-width="2"/>
+            <line x1="340" y1="376" x2="212" y2="150" stroke="#1f2b3d" stroke-width="2"/>
+            <line x1="200" y1="376" x2="200" y2="150" stroke="#2de8c9" stroke-width="2" stroke-dasharray="14 14" opacity="0.6">
+              <animate attributeName="stroke-dashoffset" from="0" to="-56" dur="1s" repeatCount="indefinite"/>
+            </line>
+
+            <path d="M 200 340 C 206 280, 214 220, 216 165" fill="none" stroke="#2de8c9" stroke-width="1.4" stroke-dasharray="3 6" opacity="0.7"/>
+
+            <rect x="176" y="336" width="48" height="30" rx="4" fill="#111926" stroke="#2de8c9" stroke-width="1.4"/>
+            <text x="200" y="356" fill="#2de8c9" font-family="JetBrains Mono, monospace" font-size="9" text-anchor="middle">EGO</text>
+
+            <rect x="172" y="224" width="56" height="38" fill="none" stroke="#ff9a4d" stroke-width="1.4">
+              <animate attributeName="y" values="224;230;224" dur="2.6s" repeatCount="indefinite"/>
+            </rect>
+            <text x="200" y="218" fill="#ff9a4d" font-family="JetBrains Mono, monospace" font-size="10" text-anchor="middle">CAR · 42m</text>
+
+            <rect x="185" y="186" width="30" height="22" fill="none" stroke="#2de8c9" stroke-width="1.2">
+              <animate attributeName="y" values="186;190;186" dur="3.2s" repeatCount="indefinite"/>
+            </rect>
+            <text x="200" y="180" fill="#2de8c9" font-family="JetBrains Mono, monospace" font-size="9.5" text-anchor="middle">CAR · 78m</text>
+          </g>
+
+          <!-- ============ SCENE 6: ROBOT NAVIGATION ============ -->
+          <g class="scene" id="scene-nav">
+            <circle cx="200" cy="200" r="176" fill="none" stroke="#1f2b3d" stroke-width="1"/>
+            <circle cx="200" cy="200" r="132" fill="none" stroke="#1f2b3d" stroke-width="1"/>
+            <circle cx="200" cy="200" r="88" fill="none" stroke="#1f2b3d" stroke-width="1"/>
+
+            <path id="navPath" d="M 70 320 L 150 262 L 160 182 L 250 150 L 320 92" fill="none" stroke="#2de8c9" stroke-width="1.6" stroke-dasharray="4 5" opacity="0.6"/>
+
+            <g fill="#5d6b82">
+              <rect x="145" y="257" width="10" height="10" transform="rotate(45 150 262)"/>
+              <rect x="155" y="177" width="10" height="10" transform="rotate(45 160 182)"/>
+              <rect x="245" y="145" width="10" height="10" transform="rotate(45 250 150)"/>
+            </g>
+
+            <g transform="translate(70,320)" fill="#ff9a4d">
+              <circle r="6"><animate attributeName="opacity" values="1;0.3;1" dur="1.6s" repeatCount="indefinite"/></circle>
+            </g>
+            <g transform="translate(320,92)" fill="#ff9a4d">
+              <circle r="7"><animate attributeName="opacity" values="1;0.35;1" dur="1.4s" repeatCount="indefinite"/></circle>
+            </g>
+            <text x="332" y="88" fill="#ff9a4d" font-family="JetBrains Mono, monospace" font-size="10">GOAL</text>
+
+            <g fill="#2de8c9" style="filter:drop-shadow(0 0 6px #2de8c9)">
+              <polygon points="8,0 -6,6 -6,-6">
+                <animateMotion dur="7s" repeatCount="indefinite" rotate="auto" path="M 70 320 L 150 262 L 160 182 L 250 150 L 320 92"/>
+              </polygon>
+            </g>
+          </g>
+        </svg>
+        <div class="mode-caption" id="modeCaption">Building an occupancy grid from LiDAR returns</div>
+      </div>
+
+      <div class="mode-tabs" id="modeTabs">
+        <button class="mode-tab active" data-idx="0">SLAM<span class="bar"></span></button>
+        <button class="mode-tab" data-idx="1">DETECT<span class="bar"></span></button>
+        <button class="mode-tab" data-idx="2">TRACK<span class="bar"></span></button>
+        <button class="mode-tab" data-idx="3">SEMANTICS<span class="bar"></span></button>
+        <button class="mode-tab" data-idx="4">DRIVE<span class="bar"></span></button>
+        <button class="mode-tab" data-idx="5">NAVIGATE<span class="bar"></span></button>
+      </div>
+    </div>
+  </div>
 </section>
 
+<!-- ================= MARQUEE ================= -->
+<div class="marquee-wrap">
+  <div class="marquee" id="marquee">
+    <span>ROS2 <b>·</b> NAV2 <b>·</b> SLAM <b>·</b> C++ <b>·</b> PYTHON <b>·</b> MULTI-ROBOT COORDINATION <b>·</b> 3D LIDAR <b>·</b> BEHAVIOR TREES <b>·</b> QT <b>·</b> GIT <b>·</b> LINUX <b>·</b></span>
+    <span>ROS2 <b>·</b> NAV2 <b>·</b> SLAM <b>·</b> C++ <b>·</b> PYTHON <b>·</b> MULTI-ROBOT COORDINATION <b>·</b> 3D LIDAR <b>·</b> BEHAVIOR TREES <b>·</b> QT <b>·</b> GIT <b>·</b> LINUX <b>·</b></span>
+  </div>
+</div>
+
+<!-- ================= ABOUT ================= -->
 <section id="about">
-<h2>Mission Profile</h2>
-<p>Robotics engineer with expertise in autonomous navigation, perception, SLAM, and commercial service robot deployment.</p>
-<div class="stats">
-<div><b>5+</b><span>Years Robotics R&D</span></div>
-<div><b>PhD</b><span>Control & Robot Engineering</span></div>
-<div><b>24/7</b><span>Autonomous Operations</span></div>
-<div><b>Global</b><span>Robot Deployments</span></div>
-</div>
+  <div class="wrap about-grid">
+    <div class="reveal">
+      <span class="section-tag">// About</span>
+      <h2 class="section-title">From dissertation to deployed fleets.</h2>
+      <p>I'm a robotics engineer who has spent the last decade moving between research labs and production floors —
+        from <b>autonomous driving perception</b> at Chungbuk National University to <b>commercial service robots</b>
+        now running in the field for RGT Inc.</p>
+      <p>My PhD centered on <b>semantics-aware dynamic SLAM</b>, fusing 3D LiDAR and vision to track moving objects
+        in cluttered, real-world scenes. That research became the foundation for how I now build navigation stacks:
+        systems that don't just plan a path, but understand the space they're moving through.</p>
+      <p>Today I lead <b>ROS2/Nav2 navigation development</b> at RGT, architecting everything from sensor filtering
+        and localization to fleet-level multi-robot coordination — shipped and running across multiple countries.</p>
+    </div>
+    <div class="stat-panel reveal">
+      <div class="id-card">
+        <div class="id-photo"><img src="assets/profile.jpg" alt="Muhammad Sualeh"></div>
+        <div class="id-info">
+          <span class="id-name">M. SUALEH</span>
+          <span class="id-role">Navigation Engineer</span>
+          <span class="id-loc">Seoul, KR</span>
+        </div>
+      </div>
+      <div class="stat-panel-title">Profile Telemetry <span>#32663580</span></div>
+      <div class="stat-row"><span class="label">Role</span><span class="val" style="font-size:14px;">Navigation Engineer</span></div>
+      <div class="stat-row"><span class="label">Base</span><span class="val" style="font-size:14px;">Seoul, KR</span></div>
+      <div class="stat-row"><span class="label">Experience</span><span class="val">5+ yrs</span></div>
+      <div class="stat-row"><span class="label">Patents</span><span class="val">3</span></div>
+      <div class="stat-row"><span class="label">Publications</span><span class="val">8</span></div>
+      <div class="stat-row"><span class="label">Status</span><span class="val" style="color:var(--amber); font-size:14px;">Open to R&amp;D</span></div>
+    </div>
+  </div>
 </section>
 
-<section id="projects">
-<h2>Featured Projects</h2>
-<div class="cards">
-<div class="card"><h3>Multi‑Robot Navigation Framework</h3><p>Production-ready coordination and routing system.</p></div>
-<div class="card"><h3>SIRBOT Navigation Stack</h3><p>Commercial deployment across international markets.</p></div>
-<div class="card"><h3>Semantic Dynamic SLAM</h3><p>Research on perception-aware mapping.</p></div>
-<div class="card"><h3>Visual‑LiDAR Perception</h3><p>Object detection, tracking and fusion.</p></div>
-</div>
+<!-- ================= PATH / EXPERIENCE ================= -->
+<section id="path">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="section-tag">// Career Path</span>
+      <h2 class="section-title">The route so far.</h2>
+      <p class="section-desc">Every role has been a waypoint toward the same destination: robots that navigate real, shared, unpredictable spaces.</p>
+    </div>
+
+    <div class="path" id="pathTrack">
+      <div class="waypoint reveal">
+        <div class="wp-meta"><span>2005 — 2009</span><span class="loc">Abbottabad, Pakistan</span></div>
+        <div class="wp-role">BSc, Electronics Engineering</div>
+        <div class="wp-org">COMSATS University Islamabad · CGPA 3.48/4.0</div>
+        <ul class="wp-list"><li>Thesis: adaptive controller for stability and control of UAVs.</li></ul>
+      </div>
+
+      <div class="waypoint reveal">
+        <div class="wp-meta"><span>2009 — 2011</span><span class="loc">Göteborg, Sweden</span></div>
+        <div class="wp-role">MSc, Systems Control &amp; Mechatronics</div>
+        <div class="wp-org">Chalmers University of Technology · with Volvo Cars · GPA 4.0/5.0</div>
+        <ul class="wp-list">
+          <li>Designed a collision-avoidance, reprogrammable welding station for automotive manufacturing.</li>
+          <li>Proposed a cycle-time reduction approach approved for future implementation at Volvo.</li>
+        </ul>
+      </div>
+
+      <div class="waypoint reveal">
+        <div class="wp-meta"><span>2012 — 2017</span><span class="loc">Abbottabad, Pakistan</span></div>
+        <div class="wp-role">Lecturer</div>
+        <div class="wp-org">Electrical &amp; Electronics Eng. Dept., COMSATS University Islamabad</div>
+        <ul class="wp-list">
+          <li>Taught undergraduate engineering courses and supervised final-year projects.</li>
+          <li>Served as Departmental Operating Officer for three years.</li>
+        </ul>
+      </div>
+
+      <div class="waypoint reveal">
+        <div class="wp-meta"><span>2017 — 2021</span><span class="loc">Cheongju, South Korea</span></div>
+        <div class="wp-role">PhD Research Scholar</div>
+        <div class="wp-org">Intelligent Robot Lab, Chungbuk National University · GPA 3.88/4.0</div>
+        <ul class="wp-list">
+          <li>3D LiDAR-based object detection and tracking — 2 registered patents, 1 licensed.</li>
+          <li>Visual-LiDAR fusion for object detection, tracking, and dynamic SLAM.</li>
+          <li>Built Clothoid, an autonomous-driving stack for the Hyundai Autonomous Car Competition 2019.</li>
+        </ul>
+      </div>
+
+      <div class="waypoint reveal">
+        <div class="wp-meta"><span>2021 — 2022</span><span class="loc">Cheongju, South Korea</span></div>
+        <div class="wp-role">Postdoctoral Researcher</div>
+        <div class="wp-org">Intelligent Robot Lab, Chungbuk National University</div>
+        <ul class="wp-list">
+          <li>Proposed and advanced research on Collaborative Semantic SLAM.</li>
+          <li>Published an SCI-indexed journal paper on semantics-aware dynamic SLAM.</li>
+        </ul>
+      </div>
+
+      <div class="waypoint current reveal">
+        <div class="wp-meta"><span>2022 — Present</span><span class="loc">Seoul, South Korea</span></div>
+        <div class="wp-role">Navigation Engineer</div>
+        <div class="wp-org">RGT Inc. — SIRBOT &amp; TIMBOT platforms</div>
+        <ul class="wp-list">
+          <li>Lead ROS2/Nav2 navigation stack development from architecture through production release.</li>
+          <li>Architected a full multi-robot navigation framework, shipped into an existing single-robot product line.</li>
+          <li>Built a distributed conflict-resolution system for head-on, crossing, and merge scenarios, cutting fleet deadlocks.</li>
+          <li>Designed real-time safety systems: emergency stop, slope detection, dynamic pause/resume.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </section>
 
-<section id="experience">
-<h2>Career Timeline</h2>
-<ul class="timeline">
-<li><b>2022-Present</b> — Navigation Engineer, RGT</li>
-<li><b>2021-2022</b> — Postdoctoral Researcher</li>
-<li><b>2017-2021</b> — PhD Research Scholar</li>
-<li><b>2012-2017</b> — Lecturer</li>
-<li><b>2009-2011</b> — MSc, Chalmers + Volvo</li>
-</ul>
+<!-- ================= SYSTEMS / SKILLS ================= -->
+<section id="systems">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="section-tag">// Systems</span>
+      <h2 class="section-title">What's under the hood.</h2>
+      <p class="section-desc">The stack I reach for, grouped the way a navigation engineer thinks about a robot: perceive, plan, move, ship.</p>
+    </div>
+    <div class="sys-grid">
+      <div class="sys-card reveal">
+        <div class="sys-card-head"><div class="sys-icon">N</div><h3>Navigation &amp; Planning</h3></div>
+        <div class="chips">
+          <span class="chip">ROS2</span><span class="chip">Nav2</span><span class="chip">Path Planning</span>
+          <span class="chip">Behavior Trees</span><span class="chip">Costmaps</span><span class="chip">Multi-Robot Coordination</span>
+        </div>
+      </div>
+      <div class="sys-card reveal">
+        <div class="sys-card-head"><div class="sys-icon">P</div><h3>Perception &amp; SLAM</h3></div>
+        <div class="chips">
+          <span class="chip">SLAM</span><span class="chip">3D LiDAR</span><span class="chip">Object Detection &amp; Tracking</span>
+          <span class="chip">Visual-LiDAR Fusion</span><span class="chip">Sensor Filtering</span>
+        </div>
+      </div>
+      <div class="sys-card reveal">
+        <div class="sys-card-head"><div class="sys-icon">S</div><h3>Systems &amp; Tooling</h3></div>
+        <div class="chips">
+          <span class="chip">C++</span><span class="chip">Python</span><span class="chip">Qt</span>
+          <span class="chip">Git</span><span class="chip">Linux</span><span class="chip">Deployment Automation</span>
+        </div>
+      </div>
+      <div class="sys-card reveal">
+        <div class="sys-card-head"><div class="sys-icon">L</div><h3>Languages</h3></div>
+        <div class="chips">
+          <span class="chip">English — Business</span><span class="chip">Urdu — Native</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<section>
-<h2>Terminal</h2>
-<pre>
-$ whoami
-Muhammad Sualeh
-
-$ specialization
-ROS2
-Navigation2
-SLAM
-Multi-Robot Systems
-
-$ status
-ACTIVE
-</pre>
+<!-- ================= PROJECTS ================= -->
+<section id="work">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="section-tag">// Key Projects</span>
+      <h2 class="section-title">Research, shipped.</h2>
+      <p class="section-desc">A few systems that moved from whiteboard to running on real robots in real spaces.</p>
+    </div>
+    <div class="proj-grid">
+      <div class="proj-card reveal">
+        <span class="proj-num">01 / FLEET</span>
+        <h3>Multi-Robot Navigation Framework</h3>
+        <p>Architected an end-to-end multi-robot navigation framework, integrated into an existing single-robot product from concept through production release.</p>
+        <div class="proj-tags"><span>ROS2</span><span>Nav2</span><span>C++</span></div>
+      </div>
+      <div class="proj-card reveal">
+        <span class="proj-num">02 / ROUTING</span>
+        <h3>Distributed Conflict Resolution</h3>
+        <p>Novel multi-robot routing strategy handling head-on, crossing, and merge conflicts in shared spaces — reduced deadlocks and improved live fleet throughput.</p>
+        <div class="proj-tags"><span>Graph Planning</span><span>Multi-Robot</span></div>
+      </div>
+      <div class="proj-card reveal">
+        <span class="proj-num">03 / SAFETY</span>
+        <h3>Real-Time Safety Systems</h3>
+        <p>Emergency stop, slope-detection-based wheel locking, and dynamic pause/resume behavior for robots operating around people.</p>
+        <div class="proj-tags"><span>Safety</span><span>Real-Time</span></div>
+      </div>
+      <div class="proj-card reveal">
+        <span class="proj-num">04 / PLANNING</span>
+        <h3>Graph-Based Global Planner</h3>
+        <p>Custom global planner and Nav2 behavior-tree plugins for flexible, configurable robot behavior across varied environments.</p>
+        <div class="proj-tags"><span>Nav2 Plugins</span><span>BT</span></div>
+      </div>
+      <div class="proj-card reveal">
+        <span class="proj-num">05 / TOOLING</span>
+        <h3>Fleet Monitoring GUI</h3>
+        <p>Built a Qt-based operator tool giving real-time visibility into fleet status, positioning, and health across deployments.</p>
+        <div class="proj-tags"><span>Qt</span><span>Operator Tools</span></div>
+      </div>
+      <div class="proj-card reveal">
+        <span class="proj-num">06 / DEVOPS</span>
+        <h3>Deployment Automation</h3>
+        <p>Internal tooling to automate robot configuration and deployment, significantly cutting setup time across new installations.</p>
+        <div class="proj-tags"><span>Automation</span><span>Linux</span></div>
+      </div>
+    </div>
+  </div>
 </section>
 
+<!-- ================= PUBLICATIONS ================= -->
+<section id="papers">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="section-tag">// Publications</span>
+      <h2 class="section-title">Research log.</h2>
+      <p class="section-desc">Peer-reviewed work spanning SLAM, 3D LiDAR perception, and autonomous driving, across journals and international conferences including IROS.</p>
+    </div>
+    <div class="pub-note reveal">5 journal articles · 6 international conference papers · 2 registered patents (1 licensed) · 2 filed patents</div>
+    <div class="pub-list reveal">
+      <div class="pub-item"><span class="pub-idx">01</span><span class="pub-title">Simultaneous Localization and Mapping in the Epoch of Semantics: A Survey</span></div>
+      <div class="pub-item"><span class="pub-idx">02</span><span class="pub-title">Clothoid: An Integrated Hierarchical Framework for Autonomous Driving in a Dynamic Urban Environment</span></div>
+      <div class="pub-item"><span class="pub-idx">03</span><span class="pub-title">Visual-LiDAR Based 3D Object Detection and Tracking for Embedded Systems</span></div>
+      <div class="pub-item"><span class="pub-idx">04</span><span class="pub-title">Dynamic Multi-LiDAR Based Multiple Object Detection and Tracking</span></div>
+      <div class="pub-item"><span class="pub-idx">05</span><span class="pub-title">3D-LiDAR Multiple Object Tracking for Autonomous Vehicle</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= EDUCATION ================= -->
+<section id="education">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="section-tag">// Education</span>
+      <h2 class="section-title">Foundations.</h2>
+    </div>
+    <div class="edu-grid">
+      <div class="edu-card reveal">
+        <span class="edu-year">2017 — 2021</span>
+        <h3>PhD, Control &amp; Robot Engineering</h3>
+        <div class="school">Chungbuk National University · GPA 3.88/4.0</div>
+        <div class="thesis"><b>Thesis:</b> Semantics-Aware Dynamic SLAM Based on 3D Object Detection and Tracking.<br><b>Advisor:</b> Prof. Gon-woo Kim</div>
+      </div>
+      <div class="edu-card reveal">
+        <span class="edu-year">2009 — 2011</span>
+        <h3>MSc, Systems Control &amp; Mechatronics</h3>
+        <div class="school">Chalmers University of Technology · GPA 4.0/5.0</div>
+        <div class="thesis"><b>Thesis:</b> Automatic Coordination and Collision Avoidance Using Sequence Planner and Process Simulate.<br><b>Advisors:</b> Petter Falkman, Stefan Axelsson</div>
+      </div>
+      <div class="edu-card reveal">
+        <span class="edu-year">2005 — 2009</span>
+        <h3>BSc, Electronics Engineering</h3>
+        <div class="school">COMSATS University Islamabad · CGPA 3.48/4.0</div>
+        <div class="thesis"><b>Thesis:</b> Adaptive Controller for Stability and Control of UAVs.<br><b>Advisor:</b> Prof. Laiq Khan</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
 <section id="contact">
-<h2>Connect</h2>
-<p>GitHub: https://github.com/er-sualeh</p>
-<p>LinkedIn: linkedin.com/in/er-sualeh</p>
+  <div class="wrap">
+    <div class="contact-box reveal">
+      <h2>Let's build something<br>that finds its own way.</h2>
+      <p>Open to senior navigation, SLAM, and R&amp;D roles. Based in Seoul — happy to talk remote or on-site.</p>
+      <div class="contact-links">
+        <a class="btn btn-primary" href="mailto:er.sualeh@gmail.com">er.sualeh@gmail.com</a>
+        <a class="btn btn-ghost" href="https://github.com/er-sualeh" target="_blank" rel="noopener">GitHub ↗</a>
+        <a class="btn btn-ghost" href="https://www.linkedin.com/in/er-sualeh" target="_blank" rel="noopener">LinkedIn ↗</a>
+      </div>
+    </div>
+  </div>
 </section>
 
-<script src="script.js"></script>
+<footer>
+  <div>MUHAMMAD SUALEH — NAVIGATION &amp; ROBOTICS ENGINEER</div>
+  <div class="coords" id="footerClock">SEOUL, KR · 37.5665°N 126.9780°E</div>
+</footer>
+
+<script>
+  // mobile nav toggle
+  const navToggle = document.getElementById('navToggle');
+  const navlinks = document.getElementById('navlinks');
+  navToggle.addEventListener('click', () => navlinks.classList.toggle('open'));
+  navlinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navlinks.classList.remove('open')));
+
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal, .waypoint');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); } });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  // path draw-in trigger
+  const pathTrack = document.getElementById('pathTrack');
+  const pathIo = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting){ pathTrack.classList.add('in'); } });
+  }, { threshold: 0.1 });
+  pathIo.observe(pathTrack);
+
+  // perception/navigation mode switcher
+  const modes = [
+    { id:'slam',   name:'SLAM MAPPING',          caption:'Building an occupancy grid from LiDAR returns' },
+    { id:'detect', name:'OBJECT DETECTION',      caption:'Classifying and localizing objects in the scene' },
+    { id:'track',  name:'MULTI-OBJECT TRACKING', caption:'Associating detections across frames to hold identity' },
+    { id:'seg',    name:'SEMANTIC SEGMENTATION', caption:'Labeling free space, obstacles, and surfaces' },
+    { id:'drive',  name:'AUTONOMOUS DRIVING',    caption:'Predicting trajectory and reacting to traffic' },
+    { id:'nav',    name:'ROBOT NAVIGATION',      caption:'Planning and executing a path to the goal' },
+  ];
+  const modeNameEl = document.getElementById('modeName');
+  const modeCaptionEl = document.getElementById('modeCaption');
+  const tabs = Array.from(document.querySelectorAll('.mode-tab'));
+  let currentMode = 0;
+  let autoTimer;
+
+  function activateMode(idx){
+    currentMode = idx;
+    document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+    document.getElementById('scene-' + modes[idx].id).classList.add('active');
+    modeNameEl.textContent = modes[idx].name;
+    modeCaptionEl.textContent = modes[idx].caption;
+    tabs.forEach((t, i) => {
+      t.classList.toggle('active', i === idx);
+      const bar = t.querySelector('.bar');
+      bar.style.animation = 'none';
+      void bar.offsetHeight; // force reflow to restart animation
+      bar.style.animation = '';
+    });
+  }
+
+  function startAuto(){
+    clearInterval(autoTimer);
+    autoTimer = setInterval(() => activateMode((currentMode + 1) % modes.length), 4500);
+  }
+
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => { activateMode(i); startAuto(); });
+  });
+
+  activateMode(0);
+  startAuto();
+
+  // live clock in footer / hud
+  function pad(n){ return n.toString().padStart(2,'0'); }
+  function updateClock(){
+    const now = new Date();
+    const kst = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+    const t = pad(kst.getHours()) + ':' + pad(kst.getMinutes()) + ':' + pad(kst.getSeconds());
+    document.getElementById('footerClock').textContent = 'SEOUL, KR · ' + t + ' KST';
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+</script>
+
 </body>
 </html>

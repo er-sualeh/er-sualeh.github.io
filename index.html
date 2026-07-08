@@ -167,7 +167,7 @@
     border:1px solid var(--line); border-radius:12px; background:radial-gradient(circle at 50% 50%, #0c1420 0%, #080b10 75%);
     overflow:hidden;
   }
-  .radar-box svg{width:100%; height:100%; display:block;}
+  .radar-box svg{width:100%; height:100%; display:block; position:relative; z-index:1;}
   .hud-label{
     position:absolute; font-family:var(--mono); font-size:9.5px; color:var(--mist-dim); letter-spacing:0.5px; z-index:2; pointer-events:none;
   }
@@ -181,7 +181,20 @@
     font-family:var(--mono); font-size:10px; color:var(--mist-dim); line-height:1.4;
   }
 
-  .scene{display:none; opacity:0;}
+  .scene-video-layer{position:absolute; inset:0; z-index:0; overflow:hidden; border-radius:12px;}
+  .scene-video-layer::after{
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(circle at 50% 50%, transparent 25%, var(--void) 92%);
+  }
+  .mode-video{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+    opacity:0; transition:opacity 0.7s ease;
+    filter:grayscale(55%) saturate(1.3) contrast(1.1) brightness(0.85);
+    mix-blend-mode:screen;
+  }
+  .mode-video.active{opacity:0.3;}
+
+  .scene{display:none; opacity:0; position:relative; z-index:1;}
   .scene.active{display:block; opacity:1;}
 
   @keyframes slam-spin{ to{ transform:rotate(360deg); } }
@@ -413,6 +426,14 @@
     </div>
     <div class="radar-stage">
       <div class="radar-box">
+        <div class="scene-video-layer">
+          <video class="mode-video active" data-scene="slam" muted loop autoplay playsinline><source src="assets/video/slam-bg.mp4" type="video/mp4"></video>
+          <video class="mode-video" data-scene="detect" muted loop autoplay playsinline><source src="assets/video/detect-bg.mp4" type="video/mp4"></video>
+          <video class="mode-video" data-scene="track" muted loop autoplay playsinline><source src="assets/video/track-bg.mp4" type="video/mp4"></video>
+          <video class="mode-video" data-scene="seg" muted loop autoplay playsinline><source src="assets/video/seg-bg.mp4" type="video/mp4"></video>
+          <video class="mode-video" data-scene="drive" muted loop autoplay playsinline><source src="assets/video/drive-bg.mp4" type="video/mp4"></video>
+          <video class="mode-video" data-scene="nav" muted loop autoplay playsinline><source src="assets/video/nav-bg.mp4" type="video/mp4"></video>
+        </div>
         <div class="hud-label hud-tl">MODE<span id="modeName">SLAM MAPPING</span></div>
         <div class="hud-label hud-br" id="coordReadout">37.5665°N 126.9780°E<br>SEOUL, KR</div>
         <svg viewBox="0 0 400 400" aria-hidden="true">
@@ -960,6 +981,11 @@
       bar.style.animation = 'none';
       void bar.offsetHeight; // force reflow to restart animation
       bar.style.animation = '';
+    });
+    document.querySelectorAll('.mode-video').forEach(v => {
+      const isMatch = v.dataset.scene === modes[idx].id;
+      v.classList.toggle('active', isMatch);
+      if (isMatch) { v.play().catch(() => {}); } else { v.pause(); }
     });
   }
 

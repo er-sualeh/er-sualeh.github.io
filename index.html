@@ -613,7 +613,7 @@
             </g>
           </g>
         </svg>
-        <div class="mode-caption" id="modeCaption">Building an occupancy grid from LiDAR returns</div>
+        <div class="mode-caption" id="modeCaption">Dynamic SLAM with MODT</div>
       </div>
 
       <div class="mode-tabs" id="modeTabs">
@@ -925,11 +925,11 @@
 
   // perception/navigation mode switcher
   const modes = [
-    { id:'slam',   name:'SLAM MAPPING',          caption:'Building an occupancy grid from LiDAR returns' },
-    { id:'detect', name:'OBJECT DETECTION',      caption:'Classifying and localizing objects in the scene' },
-    { id:'track',  name:'MULTI-OBJECT TRACKING', caption:'Associating detections across frames to hold identity' },
-    { id:'seg',    name:'SEMANTIC SEGMENTATION', caption:'Labeling free space, obstacles, and surfaces' },
-    { id:'drive',  name:'AUTONOMOUS DRIVING',    caption:'Predicting trajectory and reacting to traffic' },
+    { id:'slam',   name:'SLAM MAPPING',          caption:'Dynamic SLAM with Object Detection and Tracking' },
+    { id:'detect', name:'OBJECT DETECTION',      caption:'3D object detection and Tracking' },
+    { id:'track',  name:'MULTI-OBJECT TRACKING', caption:'Multi-Object Detection and Trackign' },
+    { id:'seg',    name:'SEMANTIC SEGMENTATION', caption:'3D Lidar based Semantic Segmentation' },
+    { id:'drive',  name:'AUTONOMOUS DRIVING',    caption:'Situation Aware Autonomous Driving' },
     { id:'nav',    name:'ROBOT NAVIGATION',      caption:'Planning and executing a path to the goal' },
   ];
   const modeNameEl = document.getElementById('modeName');

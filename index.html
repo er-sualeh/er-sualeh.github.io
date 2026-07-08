@@ -192,7 +192,7 @@
     filter:grayscale(55%) saturate(1.3) contrast(1.1) brightness(0.85);
     mix-blend-mode:screen;
   }
-  .mode-video.active{opacity:0.3;}
+  .mode-video.active{opacity:0.5;}
 
   .scene{display:none; opacity:0; position:relative; z-index:1;}
   .scene.active{display:block; opacity:1;}
@@ -428,11 +428,11 @@
       <div class="radar-box">
         <div class="scene-video-layer">
           <video class="mode-video active" data-scene="slam" muted loop autoplay playsinline><source src="assets/video/slam-bg.mp4" type="video/mp4"></video>
-          <video class="mode-video" data-scene="detect" muted loop autoplay playsinline><source src="assets/video/detect-bg.mp4" type="video/mp4"></video>
-          <video class="mode-video" data-scene="track" muted loop autoplay playsinline><source src="assets/video/track-bg.mp4" type="video/mp4"></video>
-          <video class="mode-video" data-scene="seg" muted loop autoplay playsinline><source src="assets/video/seg-bg.mp4" type="video/mp4"></video>
-          <video class="mode-video" data-scene="drive" muted loop autoplay playsinline><source src="assets/video/drive-bg.mp4" type="video/mp4"></video>
-          <video class="mode-video" data-scene="nav" muted loop autoplay playsinline><source src="assets/video/nav-bg.mp4" type="video/mp4"></video>
+          <video class="mode-video" data-scene="detect" muted loop autoplay playsinline><source src="assets/video/detect_bg.mp4" type="video/mp4"></video>
+          <video class="mode-video" data-scene="track" muted loop autoplay playsinline><source src="assets/video/track_bg.mp4" type="video/mp4"></video>
+          <video class="mode-video" data-scene="seg" muted loop autoplay playsinline><source src="assets/video/seg_bg.mp4" type="video/mp4"></video>
+          <video class="mode-video" data-scene="drive" muted loop autoplay playsinline><source src="assets/video/drive_bg.mp4" type="video/mp4"></video>
+          <video class="mode-video" data-scene="nav" muted loop autoplay playsinline><source src="assets/video/nav_bg.mp4" type="video/mp4"></video>
         </div>
         <div class="hud-label hud-tl">MODE<span id="modeName">SLAM MAPPING</span></div>
         <div class="hud-label hud-br" id="coordReadout">37.5665°N 126.9780°E<br>SEOUL, KR</div>
@@ -506,27 +506,6 @@
             <rect x="24" y="24" width="352" height="352" fill="url(#dotgrid)" opacity="0.6"/>
             <rect x="24" y="24" width="352" height="352" rx="8" fill="none" stroke="#1f2b3d"/>
 
-            <g>
-              <rect x="66" y="108" width="92" height="132" fill="none" stroke="#2de8c9" stroke-width="1.6" stroke-dasharray="290" stroke-dashoffset="290">
-                <animate attributeName="stroke-dashoffset" from="290" to="0" dur="0.8s" fill="freeze"/>
-              </rect>
-              <text x="66" y="102" fill="#2de8c9" font-family="JetBrains Mono, monospace" font-size="11">PERSON 0.94</text>
-            </g>
-
-            <g>
-              <rect x="188" y="176" width="112" height="72" fill="none" stroke="#ff9a4d" stroke-width="1.6" stroke-dasharray="368" stroke-dashoffset="368">
-                <animate attributeName="stroke-dashoffset" from="368" to="0" dur="0.8s" begin="0.25s" fill="freeze"/>
-              </rect>
-              <text x="188" y="170" fill="#ff9a4d" font-family="JetBrains Mono, monospace" font-size="11">CART 0.87</text>
-            </g>
-
-            <g>
-              <rect x="246" y="256" width="72" height="64" fill="none" stroke="#2de8c9" stroke-width="1.6" stroke-dasharray="272" stroke-dashoffset="272">
-                <animate attributeName="stroke-dashoffset" from="272" to="0" dur="0.8s" begin="0.5s" fill="freeze"/>
-              </rect>
-              <text x="246" y="250" fill="#2de8c9" font-family="JetBrains Mono, monospace" font-size="11">PALLET 0.81</text>
-            </g>
-
             <line x1="0" y1="60" x2="400" y2="60" stroke="#2de8c9" stroke-width="1" opacity="0.35">
               <animate attributeName="y1" values="40;360;40" dur="4s" repeatCount="indefinite"/>
               <animate attributeName="y2" values="40;360;40" dur="4s" repeatCount="indefinite"/>
@@ -566,27 +545,17 @@
 
           <!-- ============ SCENE 4: SEMANTIC SEGMENTATION ============ -->
           <g class="scene" id="scene-seg">
-            <rect x="24" y="24" width="352" height="352" fill="url(#dotgrid)" opacity="0.6"/>
             <rect x="24" y="24" width="352" height="352" rx="8" fill="none" stroke="#1f2b3d"/>
 
-            <polygon points="40,376 360,376 320,258 80,258" fill="#2de8c9" opacity="0">
-              <animate attributeName="opacity" from="0" to="0.28" dur="0.9s" begin="0s" fill="freeze"/>
-            </polygon>
-            <polygon points="40,24 360,24 336,142 64,142" fill="#6c7bff" opacity="0">
-              <animate attributeName="opacity" from="0" to="0.28" dur="0.9s" begin="0.2s" fill="freeze"/>
-            </polygon>
-            <ellipse cx="150" cy="220" rx="26" ry="46" fill="#ff9a4d" opacity="0">
-              <animate attributeName="opacity" from="0" to="0.55" dur="0.9s" begin="0.4s" fill="freeze"/>
-            </ellipse>
-            <rect x="248" y="196" width="52" height="52" rx="6" fill="#ff6f91" opacity="0">
-              <animate attributeName="opacity" from="0" to="0.5" dur="0.9s" begin="0.6s" fill="freeze"/>
-            </rect>
-
-            <g font-family="JetBrains Mono, monospace" font-size="9.5">
-              <circle cx="46" cy="300" r="4" fill="#2de8c9"/><text x="56" y="304" fill="#8b9bb4">FLOOR</text>
-              <circle cx="46" cy="318" r="4" fill="#6c7bff"/><text x="56" y="322" fill="#8b9bb4">WALL</text>
-              <circle cx="46" cy="336" r="4" fill="#ff9a4d"/><text x="56" y="340" fill="#8b9bb4">DYNAMIC OBJECT</text>
-              <circle cx="46" cy="354" r="4" fill="#ff6f91"/><text x="56" y="358" fill="#8b9bb4">STATIC OBJECT</text>
+            <g font-family="JetBrains Mono, monospace" font-size="10.5">
+              <rect x="42" y="196" width="9" height="9" fill="#ff9a4d"/><text x="58" y="204" fill="#8b9bb4">PERSON</text>
+              <rect x="42" y="220" width="9" height="9" fill="#ff6f91"/><text x="58" y="228" fill="#8b9bb4">CAR</text>
+              <rect x="42" y="244" width="9" height="9" fill="#6c7bff"/><text x="58" y="252" fill="#8b9bb4">BICYCLE</text>
+              <rect x="42" y="268" width="9" height="9" fill="#2de8c9"/><text x="58" y="276" fill="#8b9bb4">ROAD</text>
+              <rect x="214" y="196" width="9" height="9" fill="#8b9bb4"/><text x="230" y="204" fill="#8b9bb4">SIDEWALK</text>
+              <rect x="214" y="220" width="9" height="9" fill="#c9a63a"/><text x="230" y="228" fill="#8b9bb4">BUILDING</text>
+              <rect x="214" y="244" width="9" height="9" fill="#4ec97a"/><text x="230" y="252" fill="#8b9bb4">VEGETATION</text>
+              <rect x="214" y="268" width="9" height="9" fill="#4ec9e8"/><text x="230" y="276" fill="#8b9bb4">SKY</text>
             </g>
           </g>
 
